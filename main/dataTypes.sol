@@ -38,7 +38,7 @@ contract Primitives{
     int public minInt = type(int).min;
     int public maxInt = type(int).max;
 
-    address public addr =0xd148663B0417b774be662E9658725Bd7935feb4c;         
+    address public addr = 0xd148663B0417b774be662E9658725Bd7935feb4c;         
 
 
     /*
