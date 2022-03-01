@@ -42,3 +42,34 @@ function assigned()
             b = true;
             y = 2;
         }
+
+
+//여러 값을 반환하는 함수
+function destructuringAssignments()
+        public
+        pure
+        returns(
+            uint,
+            bool,
+            uint,
+            uint,
+            uint
+        )
+        {
+            (uint i , bool b , uint j) = returnMany();
+
+
+            (uint x , uint y) = (4 , 5 , 6);
+            
+            return (i , b , j , x , y);
+        }
+
+ function arrayInput(uint[] memory _arr) public {}
+
+
+ uint[] public arr;
+
+
+ function arrayOutput() public view returns (uint[] memory){
+     return arr;
+ }
