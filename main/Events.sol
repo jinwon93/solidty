@@ -3,9 +3,8 @@ pragma solidity ^0.8.10;
 
 
 contract Event {
-    // Event declaration
-    // Up to 3 parameters can be indexed.
-    // Indexed parameters helps you filter the logs by the indexed parameter
+    // 이벤트 선언
+    // 최대 3개의 변수를 인덱싱화
     event Log(address indexed sender, string message);
     event AnotherLog();
 
@@ -14,4 +13,4 @@ contract Event {
         emit Log(msg.sender, "Hello EVM!");
         emit AnotherLog();
     }
-}
+} 
