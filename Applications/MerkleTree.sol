@@ -24,6 +24,7 @@ contract MerkleProof {
         return hash == root;
     }
 }
+<<<<<<< HEAD
 
 
 contract TestMerkleProof is MerkleProof {
@@ -57,3 +58,5 @@ contract TestMerkleProof is MerkleProof {
         }
     }
 }   
+=======
+>>>>>>> fb081f7a752fe295909c0e23c2a6177b73f2d594
