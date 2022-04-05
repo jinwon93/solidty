@@ -35,5 +35,20 @@ interface IERC721 is IERC165 {
     function isApprovedForAll(address owner, address operator)
         external
         view
-        returns (bool);
+        returns (bool);       
+}
+
+
+
+interface IERC721Receiver {
+    function onERC721Received(
+        address operator,
+        address from,
+        uint tokenId,
+        bytes calldata data
+    ) external returns (bytes4);
+}
+
+contract ERC721 is IERC721 {
+    using Address for address;
 }
