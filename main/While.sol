@@ -13,7 +13,7 @@ contract Loop{
             }
         }
 
-            unit j;
+            uint j;
             while (j < 10){
                 j++;
             }
