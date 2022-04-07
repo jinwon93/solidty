@@ -51,4 +51,53 @@ interface IERC721Receiver {
 
 contract ERC721 is IERC721 {
     using Address for address;
+
+    
+
+    event Transfer(address indexed from, address indexed to, uint indexed tokenId);
+    event Approval(
+        address indexed owner,
+        address indexed approved,
+        uint indexed tokenId
+    );
+    event ApprovalForAll(
+        address indexed owner,
+        address indexed operator,
+        bool approved
+    );
+
+    // Mapping from token ID to owner address
+    mapping(uint => address) private _owners;
+
+    // Mapping owner address to token count
+    mapping(address => uint) private _balances;
+
+    // Mapping from token ID to approved address
+    mapping(uint => address) private _tokenApprovals;
+    
+
+
+        // Mapping from owner to operator approvals
+    mapping(address => mapping(address => bool)) private _operatorApprovals;
+
+    function supportsInterface(bytes4 interfaceId)
+        external
+        pure
+        override
+        returns (bool)
+    {
+        return
+            interfaceId == type(IERC721).interfaceId ||
+            interfaceId == type(IERC165).interfaceId;
+    }
+
+    function balanceOf(address owner) external view override returns (uint) {
+        require(owner != address(0), "owner = zero address");
+        return _balances[owner];
+    }
+
+    function ownerOf(uint tokenId) public view override returns (address owner) {
+        owner = _owners[tokenId];
+        require(owner != address(0), "token doesn't exist");
+    }
 }
