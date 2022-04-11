@@ -148,4 +148,18 @@ contract ERC721 is IERC721 {
         emit Transfer(from, to, tokenId);
     }
 
+    function transferFrom(
+        address from,
+        address to,
+        uint tokenId
+    ) external override {
+        address owner = ownerOf(tokenId);
+        require(
+            _isApprovedOrOwner(owner, msg.sender, tokenId),
+            "not owner nor approved"
+        );
+        _transfer(owner, from, to, tokenId);
+    }
+
+
 }
