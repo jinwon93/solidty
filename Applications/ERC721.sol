@@ -148,4 +148,45 @@ contract ERC721 is IERC721 {
         emit Transfer(from, to, tokenId);
     }
 
+    function transferFrom(
+        address from,
+        address to,
+        uint tokenId
+    ) external override {
+        address owner = ownerOf(tokenId);
+        require(
+            _isApprovedOrOwner(owner, msg.sender, tokenId),
+            "not owner nor approved"
+        );
+        _transfer(owner, from, to, tokenId);
+    }
+
+     function _checkOnERC721Received(
+        address from,
+        address to,
+        uint tokenId,
+        bytes memory _data
+    ) private returns (bool) {
+        if (to.isContract()) {
+            return
+                IERC721Receiver(to).onERC721Received(
+                    msg.sender,
+                    from,
+                    tokenId,
+                    _data
+                ) == IERC721Receiver.onERC721Received.selector;
+        } else {
+            return true;
+        }
+    }
+    function _safeTransfer(
+        address owner,
+        address from,
+        address to,
+        uint tokenId,
+        bytes memory _data
+    ) private {
+        _transfer(owner, from, to, tokenId);
+        require(_checkOnERC721Received(from, to, tokenId, _data), "not ERC721Receiver");
+    }
 }
