@@ -189,4 +189,18 @@ contract ERC721 is IERC721 {
         _transfer(owner, from, to, tokenId);
         require(_checkOnERC721Received(from, to, tokenId, _data), "not ERC721Receiver");
     }
+
+      function safeTransferFrom(
+        address from,
+        address to,
+        uint tokenId,
+        bytes memory _data
+    ) public override {
+        address owner = ownerOf(tokenId);
+        require(
+            _isApprovedOrOwner(owner, msg.sender, tokenId),
+            "not owner nor approved"
+        );
+        _safeTransfer(owner, from, to, tokenId, _data);
+    }
 }
