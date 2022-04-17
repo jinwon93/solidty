@@ -232,4 +232,14 @@ contract ERC721 is IERC721 {
 
         emit Transfer(owner, address(0), tokenId);
     }
+
+    library Address {
+    function isContract(address account) internal view returns (bool) {
+        uint size;
+        assembly {
+            size := extcodesize(account)
+        }
+        return size > 0;
+    }
+}
 }
