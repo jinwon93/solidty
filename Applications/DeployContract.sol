@@ -49,4 +49,20 @@ contract TestContract2 {
     }
 }
 
+
+contract Helper {
+    function getBytecode1() external pure returns (bytes memory) {
+        bytes memory bytecode = type(TestContract1).creationCode;
+        return bytecode;
+    }
+
+    function getBytecode2(uint _x, uint _y) external pure returns (bytes memory) {
+        bytes memory bytecode = type(TestContract2).creationCode;
+        return abi.encodePacked(bytecode, abi.encode(_x, _y));
+    }
+
+    function getCalldata(address _owner) external pure returns (bytes memory) {
+        return abi.encodeWithSignature("setOwner(address)", _owner);
+    }
+}
 }
