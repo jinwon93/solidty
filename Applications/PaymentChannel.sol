@@ -40,5 +40,32 @@ contract UniDirectionalPaymentChannel is ReentrancyGuard {
     function getEthSignedHash(uint _amount) external view returns (bytes32) {
         return _getEthSignedHash(_amount);
     }
+     function getHash(uint _amount) external view returns (bytes32) {
+        return _getHash(_amount);
+    }
 
+    function _getEthSignedHash(uint _amount) private view returns (bytes32) {
+        return _getHash(_amount).toEthSignedMessageHash();
+    }
+
+    function getEthSignedHash(uint _amount) external view returns (bytes32) {
+        return _getEthSignedHash(_amount);
+    }
+
+    function _verify(uint _amount, bytes memory _sig) private view returns (bool) {
+        return _getEthSignedHash(_amount).recover(_sig) == sender;
+    }
+
+    function verify(uint _amount, bytes memory _sig) external view returns (bool) {
+        return _verify(_amount, _sig);
+    }
+
+    function close(uint _amount, bytes memory _sig) external nonReentrant {
+        require(msg.sender == receiver, "!receiver");
+        require(_verify(_amount, _sig), "invalid sig");
+
+        (bool sent, ) = receiver.call{value: _amount}("");
+        require(sent, "Failed to send Ether");
+        selfdestruct(sender);
+    }
 }
