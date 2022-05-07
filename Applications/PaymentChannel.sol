@@ -68,4 +68,10 @@ contract UniDirectionalPaymentChannel is ReentrancyGuard {
         require(sent, "Failed to send Ether");
         selfdestruct(sender);
     }
+
+    function cancel() external {
+        require(msg.sender == sender, "!sender");
+        require(block.timestamp >= expiresAt, "!expired");
+        selfdestruct(sender);
+    }
 }
