@@ -53,4 +53,55 @@ contract BiDirectionalPaymentChannel {
         expiresAt = _expiresAt;
         challengePeriod = _challengePeriod;
     }
+
+
+    function verify(
+        bytes[2] memory _signatures,
+        address _contract,
+        address[2] memory _signers,
+        uint[2] memory _balances,
+        uint _nonce
+    ) public pure returns (bool) {
+        for (uint i = 0; i < _signatures.length; i++) {
+            /*
+            NOTE: sign with address of this contract to protect
+                  agains replay attack on other contracts
+            */
+            bool valid = _signers[i] ==
+                keccak256(abi.encodePacked(_contract, _balances, _nonce))
+                    .toEthSignedMessageHash()
+                    .recover(_signatures[i]);
+
+            if (!valid) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    modifier checkSignatures(
+        bytes[2] memory _signatures,
+        uint[2] memory _balances,
+        uint _nonce
+    ) {
+        // Note: copy storage array to memory
+        address[2] memory signers;
+        for (uint i = 0; i < users.length; i++) {
+            signers[i] = users[i];
+        }
+
+        require(
+            verify(_signatures, address(this), signers, _balances, _nonce),
+            "Invalid signature"
+        );
+
+        _;
+    }
+
+    modifier onlyUser() {
+        require(isUser[msg.sender], "Not user");
+        _;
+    }
+
 }    
