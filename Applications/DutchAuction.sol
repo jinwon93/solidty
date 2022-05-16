@@ -28,4 +28,28 @@ contract DutchAuction {
     uint public immutable expiresAt;
     uint public immutable discountRate;
 
+
+    constructor(
+        uint _startingPrice,
+        uint _discountRate,
+        address _nft,
+        uint _nftId
+    ) {
+        seller = payable(msg.sender);
+        startingPrice = _startingPrice;
+        startAt = block.timestamp;
+        expiresAt = block.timestamp + DURATION;
+        discountRate = _discountRate;
+
+        require(_startingPrice >= _discountRate * DURATION, "starting price < min");
+
+        nft = IERC721(_nft);
+        nftId = _nftId;
+    }
+
+    function getPrice() public view returns (uint) {
+        uint timeElapsed = block.timestamp - startAt;
+        uint discount = discountRate * timeElapsed;
+        return startingPrice - discount;
+    }
 }    
