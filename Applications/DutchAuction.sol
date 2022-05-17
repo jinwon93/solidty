@@ -52,4 +52,19 @@ contract DutchAuction {
         uint discount = discountRate * timeElapsed;
         return startingPrice - discount;
     }
+
+
+    function buy() external payable {
+        require(block.timestamp < expiresAt, "auction expired");
+
+        uint price = getPrice();
+        require(msg.value >= price, "ETH < price");
+
+        nft.transferFrom(seller, msg.sender, nftId);
+        uint refund = msg.value - price;
+        if (refund > 0) {
+            payable(msg.sender).transfer(refund);
+        }
+        selfdestruct(seller);
+    }
 }    
