@@ -141,4 +141,35 @@ contract CrowdFund {
     constructor(address _token) {
         token = IERC20(_token);
     }
+
+    function launch(
+        uint _goal,
+        uint32 _startAt,
+        uint32 _endAt
+    ) external {
+        require(_startAt >= block.timestamp, "start at < now");
+        require(_endAt >= _startAt, "end at < start at");
+        require(_endAt <= block.timestamp + 90 days, "end at > max duration");
+
+        count += 1;
+        campaigns[count] = Campaign({
+            creator: msg.sender,
+            goal: _goal,
+            pledged: 0,
+            startAt: _startAt,
+            endAt: _endAt,
+            claimed: false
+        });
+
+        emit Launch(count, msg.sender, _goal, _startAt, _endAt);
+    }
+
+    function cancel(uint _id) external {
+        Campaign memory campaign = campaigns[_id];
+        require(campaign.creator == msg.sender, "not creator");
+        require(block.timestamp < campaign.startAt, "started");
+
+        delete campaigns[_id];
+        emit Cancel(_id);
+    }
 }
