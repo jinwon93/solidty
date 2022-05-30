@@ -20,3 +20,30 @@ contract MultiDelegatecall {
     }
 }
 
+
+
+// Why use multi delegatecall? Why not multi call?
+// alice -> multi call --- call ---> test (msg.sender = multi call)
+// alice -> test --- delegatecall ---> test (msg.sender = alice)
+contract TestMultiDelegatecall is MultiDelegatecall {
+    event Log(address caller, string func, uint i);
+
+    function func1(uint x, uint y) external {
+        // msg.sender = alice
+        emit Log(msg.sender, "func1", x + y);
+    }
+
+    function func2() external returns (uint) {
+        // msg.sender = alice
+        emit Log(msg.sender, "func2", 2);
+        return 111;
+    }
+
+    mapping(address => uint) public balanceOf;
+
+    // WARNING: unsafe code when used in combination with multi-delegatecall
+    // user can mint multiple times for the price of msg.value
+    function mint() external payable {
+        balanceOf[msg.sender] += msg.value;
+    }
+}
