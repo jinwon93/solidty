@@ -32,4 +32,31 @@ contract TimeLock {
     uint public constant MIN_DELAY = 10; // seconds
     uint public constant MAX_DELAY = 1000; // seconds
     uint public constant GRACE_PERIOD = 1000; // seconds
+
+    address public owner;
+    // tx id => queued
+    mapping(bytes32 => bool) public queued;
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        if (msg.sender != owner) {
+            revert NotOwnerError();
+        }
+        _;
+    }
+
+    receive() external payable {}
+
+    function getTxId(
+        address _target,
+        uint _value,
+        string calldata _func,
+        bytes calldata _data,
+        uint _timestamp
+    ) public pure returns (bytes32) {
+        return keccak256(abi.encode(_target, _value, _func, _data, _timestamp));
+    }
 }
