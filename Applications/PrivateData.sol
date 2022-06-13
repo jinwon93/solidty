@@ -24,4 +24,34 @@ contract Vault {
         bytes32 password;
     }
 
+    User[] private users;
+
+    // slot 7 - empty
+    // entries are stored at hash(key, slot)
+    // where slot = 7, key = map key
+    mapping(uint => User) private idToUser;
+
+    constructor(bytes32 _password) {
+        password = _password;
+    }
+
+    function addUser(bytes32 _password) public {
+        User memory user = User({id: users.length, password: _password});
+
+        users.push(user);
+        idToUser[user.id] = user;
+    }
+
+    function getArrayLocation(
+        uint slot,
+        uint index,
+        uint elementSize
+    ) public pure returns (uint) {
+        return uint(keccak256(abi.encodePacked(slot))) + (index * elementSize);
+    }
+
+    function getMapLocation(uint slot, uint key) public pure returns (uint) {
+        return uint(keccak256(abi.encodePacked(key, slot)));
+    }
+
 }    
