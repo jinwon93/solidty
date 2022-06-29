@@ -61,4 +61,22 @@ contract Attack {
     function getBalance() public view returns (uint) {
         return address(this).balance;
     }
+
+    
+contract HoneyPot {
+    function log(
+        address _caller,
+        uint _amount,
+        string memory _action
+    ) public {
+        if (equal(_action, "Withdraw")) {
+            revert("It's a trap");
+        }
+    }
+
+    // Function to compare strings using keccak256
+    function equal(string memory _a, string memory _b) public pure returns (bool) {
+        return keccak256(abi.encode(_a)) == keccak256(abi.encode(_b));
+    }
+}
 }
