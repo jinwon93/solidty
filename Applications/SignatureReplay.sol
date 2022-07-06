@@ -29,3 +29,27 @@ contract MultiSigWallet {
     }
 
 }    
+
+ function getTxHash(address _to, uint _amount) public view returns (bytes32) {
+        return keccak256(abi.encodePacked(_to, _amount));
+    }
+
+    function _checkSigs(bytes[2] memory _sigs, bytes32 _txHash)
+        private
+        view
+        returns (bool)
+    {
+        bytes32 ethSignedHash = _txHash.toEthSignedMessageHash();
+
+        for (uint i = 0; i < _sigs.length; i++) {
+            address signer = ethSignedHash.recover(_sigs[i]);
+            bool valid = signer == owners[i];
+
+            if (!valid) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
