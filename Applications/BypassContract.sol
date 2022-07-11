@@ -20,6 +20,10 @@ contract Target {
     }
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2ce6ceb284ecb3e37524ef1ed883cb0bc448c954
 contract FailedAttack {
     // Attempting to call Target.protected will fail,
     // Target block calls from contract
