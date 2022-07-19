@@ -16,4 +16,34 @@ contract TestUniswapLiquidity {
 
         IERC20(_tokenA).approve(ROUTER, _amountA);
         IERC20(_tokenB).approve(ROUTER, _amountB);
-    }        
+
+        (uint amountA, uint amountB, uint liquidity) = IUniswapV2Router(ROUTER)
+            .addLiquidity(
+                _tokenA,
+                _tokenB,
+                _amountA,
+                _amountB,
+                1,
+                1,
+                address(this),
+                block.timestamp
+            );
+    }
+
+    function removeLiquidity(address _tokenA, address _tokenB) external {
+        address pair = IUniswapV2Factory(FACTORY).getPair(_tokenA, _tokenB);
+
+        uint liquidity = IERC20(pair).balanceOf(address(this));
+        IERC20(pair).approve(ROUTER, liquidity);
+
+        (uint amountA, uint amountB) = IUniswapV2Router(ROUTER).removeLiquidity(
+            _tokenA,
+            _tokenB,
+            liquidity,
+            1,
+            1,
+            address(this),
+            block.timestamp
+        );
+    }
+}
