@@ -17,3 +17,37 @@ contract TestUniswapOptimalOneSidedSupply {
             z = 1;
         }
 }
+
+
+ function getSwapAmount(uint r, uint a) public pure returns (uint) {
+        return (sqrt(r * (r * 3988009 + a * 3988000)) - r * 1997) / 1994;
+    }
+
+    /* Optimal one-sided supply
+    1. Swap optimal amount from token A to token B
+    2. Add liquidity
+    */
+    function zap(
+        address _tokenA,
+        address _tokenB,
+        uint _amountA
+    ) external {
+        require(_tokenA == WETH || _tokenB == WETH, "!weth");
+
+        IERC20(_tokenA).transferFrom(msg.sender, address(this), _amountA);
+
+        address pair = IUniswapV2Factory(FACTORY).getPair(_tokenA, _tokenB);
+        (uint reserve0, uint reserve1, ) = IUniswapV2Pair(pair).getReserves();
+
+        uint swapAmount;
+        if (IUniswapV2Pair(pair).token0() == _tokenA) {
+            // swap from token0 to token1
+            swapAmount = getSwapAmount(reserve0, _amountA);
+        } else {
+            // swap from token1 to token0
+            swapAmount = getSwapAmount(reserve1, _amountA);
+        }
+
+        _swap(_tokenA, _tokenB, swapAmount);
+        _addLiquidity(_tokenA, _tokenB);
+    }
