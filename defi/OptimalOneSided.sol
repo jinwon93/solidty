@@ -51,3 +51,25 @@ contract TestUniswapOptimalOneSidedSupply {
         _swap(_tokenA, _tokenB, swapAmount);
         _addLiquidity(_tokenA, _tokenB);
     }
+
+
+    function _swap(
+        address _from,
+        address _to,
+        uint _amount
+    ) internal {
+        IERC20(_from).approve(ROUTER, _amount);
+
+        address[] memory path = new address[](2);
+        path = new address[](2);
+        path[0] = _from;
+        path[1] = _to;
+
+        IUniswapV2Router(ROUTER).swapExactTokensForTokens(
+            _amount,
+            1,
+            path,
+            address(this),
+            block.timestamp
+        );
+    }
