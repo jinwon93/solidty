@@ -100,3 +100,23 @@ contract TestUniswapOptimalOneSidedSupply {
         uint deadline
     ) external returns (uint[] memory amounts);
 }
+
+
+interface IUniswapV2Factory {
+    function getPair(address token0, address token1) external view returns (address);
+}
+
+interface IUniswapV2Pair {
+    function token0() external view returns (address);
+
+    function token1() external view returns (address);
+
+    function getReserves()
+        external
+        view
+        returns (
+            uint112 reserve0,
+            uint112 reserve1,
+            uint32 blockTimestampLast
+        );
+}
