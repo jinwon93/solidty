@@ -38,5 +38,21 @@ contract StakingRewards {
         require(msg.sender == owner, "not authorized");
         _;
     }
+
+     modifier updateReward(address _account) {
+        rewardPerTokenStored = rewardPerToken();
+        updatedAt = lastTimeRewardApplicable();
+
+        if (_account != address(0)) {
+            rewards[_account] = earned(_account);
+            userRewardPerTokenPaid[_account] = rewardPerTokenStored;
+        }
+
+        _;
+    }
+
+    function lastTimeRewardApplicable() public view returns (uint) {
+        return _min(finishAt, block.timestamp);
+    }
 }    
 
