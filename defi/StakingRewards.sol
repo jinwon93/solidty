@@ -26,5 +26,17 @@ contract StakingRewards {
     uint public totalSupply;
     // User address => staked amount
     mapping(address => uint) public balanceOf;
+
+
+    constructor(address _stakingToken, address _rewardToken) {
+        owner = msg.sender;
+        stakingToken = IERC20(_stakingToken);
+        rewardsToken = IERC20(_rewardToken);
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "not authorized");
+        _;
+    }
 }    
 
