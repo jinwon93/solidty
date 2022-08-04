@@ -54,5 +54,24 @@ contract StakingRewards {
     function lastTimeRewardApplicable() public view returns (uint) {
         return _min(finishAt, block.timestamp);
     }
+
+
+    function rewardPerToken() public view returns (uint) {
+        if (totalSupply == 0) {
+            return rewardPerTokenStored;
+        }
+
+        return
+            rewardPerTokenStored +
+            (rewardRate * (lastTimeRewardApplicable() - updatedAt) * 1e18) /
+            totalSupply;
+    }
+
+    function stake(uint _amount) external updateReward(msg.sender) {
+        require(_amount > 0, "amount = 0");
+        stakingToken.transferFrom(msg.sender, address(this), _amount);
+        balanceOf[msg.sender] += _amount;
+        totalSupply += _amount;
+    }
 }    
 
