@@ -73,5 +73,20 @@ contract StakingRewards {
         balanceOf[msg.sender] += _amount;
         totalSupply += _amount;
     }
+
+    function withdraw(uint _amount) external updateReward(msg.sender) {
+        require(_amount > 0, "amount = 0");
+        balanceOf[msg.sender] -= _amount;
+        totalSupply -= _amount;
+        stakingToken.transfer(msg.sender, _amount);
+    }
+
+    function earned(address _account) public view returns (uint) {
+        return
+            ((balanceOf[_account] *
+                (rewardPerToken() - userRewardPerTokenPaid[_account])) / 1e18) +
+            rewards[_account];
+    }
 }    
+
 
