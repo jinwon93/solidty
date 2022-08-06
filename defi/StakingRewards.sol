@@ -87,6 +87,19 @@ contract StakingRewards {
                 (rewardPerToken() - userRewardPerTokenPaid[_account])) / 1e18) +
             rewards[_account];
     }
+
+     function getReward() external updateReward(msg.sender) {
+        uint reward = rewards[msg.sender];
+        if (reward > 0) {
+            rewards[msg.sender] = 0;
+            rewardsToken.transfer(msg.sender, reward);
+        }
+    }
+
+    function setRewardsDuration(uint _duration) external onlyOwner {
+        require(finishAt < block.timestamp, "reward duration not finished");
+        duration = _duration;
+    }
 }    
 
 
