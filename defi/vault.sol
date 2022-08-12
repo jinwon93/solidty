@@ -19,5 +19,31 @@ contract Vault {
     function _mint(address _to, uint _shares) private {
         totalSupply += _shares;
         balanceOf[_to] += _shares;
+
     }   
+
+     function _burn(address _from, uint _shares) private {
+        totalSupply -= _shares;
+        balanceOf[_from] -= _shares;
+    }
+
+    function deposit(uint _amount) external {
+    
+        uint shares;
+        if (totalSupply == 0) {
+            shares = _amount;
+        } else {
+            shares = (_amount * totalSupply) / token.balanceOf(address(this));
+        }
+
+        _mint(msg.sender, shares);
+        token.transferFrom(msg.sender, address(this), _amount);
+    }
+}
+
+interface IERC20 {
+
+
+
+    function totalSupply()  external view returns  (uint);
 }
