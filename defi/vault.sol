@@ -39,6 +39,14 @@ contract Vault {
         _mint(msg.sender, shares);
         token.transferFrom(msg.sender, address(this), _amount);
     }
+
+
+     function withdraw(uint _shares) external {
+        
+        uint amount = (_shares * token.balanceOf(address(this))) / totalSupply;
+        _burn(msg.sender, _shares);
+        token.transfer(msg.sender, amount);
+    }
 }
 
 interface IERC20 {
